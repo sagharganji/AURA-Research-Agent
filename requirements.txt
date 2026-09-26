@@ -1,7 +1,4 @@
-google-genai
-pydantic
-requests
-beautifulsoup4
-python-dotenv
-
-gradio
+# Local development: CLI research pipeline, Gradio UI, and FastAPI backend.
+# Install with: python -m pip install -r requirements.txt
+-r requirements.backend.txt
+gradio>=4.44,<7
