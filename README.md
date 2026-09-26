@@ -154,4 +154,6 @@ Built by **[Saghar Ganji](https://github.com/sagharganji)** · [Interactive demo
 
 *An evolving research prototype — not an autonomous scientific validation system.*
 
+Original project materials: © 2026 Saghar Ganji. See [Copyright and reuse](COPYRIGHT.md) for rights and permissions.
+
 </div>
