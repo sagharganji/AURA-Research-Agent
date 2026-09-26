@@ -138,9 +138,6 @@ DEPLOY.md               Deployment instructions
 - Expand evaluation, reproducibility checks, and research-history support.
 - Add authentication and durable usage limits before any public deployment with paid inference.
 
-## Acknowledgments
-
-Thanks to **Harsh Gupta** for the early conversations around the idea and for sharing deployment advice along the way.
 
 ---
 
