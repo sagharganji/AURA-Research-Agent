@@ -86,7 +86,12 @@ This example is an illustration of the workflow, not a claim of a trained or dep
 | Frontend hosting | GitHub Pages (live) |
 | Optional API deployment | Docker + Google Cloud Run (planned / separately configured) |
 
-## Run it locally
+## Developer setup (optional)
+
+**Just want to see AURA?** Use the [public interactive demo](https://sagharganji.github.io/AURA-Research-Agent/). The steps below are only for developers who want to run the interface or API on their own computer.
+
+<details>
+<summary><strong>Expand local installation, testing, and backend instructions</strong></summary>
 
 **Requirements:** Python 3.11+, Git, and a modern browser. You do **not** need a Gemini key to view the recorded example.
 
@@ -111,6 +116,8 @@ python -m pytest tests/test_api.py -q
 For live research, configure `GEMINI_API_KEY` **only in the server environment**, start `uvicorn app.api:app --host 127.0.0.1 --port 8080`, and configure the public backend URL in `AURA_demo_UI/config.js`. Never place the API key in browser code or commit it to GitHub.
 
 See **[DEPLOY.md](DEPLOY.md)** for the optional Cloud Run deployment plan and its cost, permission, and security considerations.
+
+</details>
 
 ## Repository map
 
