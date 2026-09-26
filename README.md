@@ -1,111 +1,153 @@
-# AURA Atlas — AI Research & Decision Agent
+<div align="center">
 
-**From complex research questions to structured, evidence-aware decisions.**
+# AURA Atlas
+### Research intelligence, organized.
 
-AURA is a Python multi-agent research prototype with a browser-based research workspace. It decomposes technical questions into research tasks, searches scholarly literature, datasets and open-source code, organizes evidence, analyzes approaches, and drafts implementation roadmaps.
+**An evidence-first, multi-agent research workspace — from the first question to a practical plan.**
 
-> **Project status:** Research prototype. The published static interface can show a **clearly labeled saved example** without a running backend. New questions require the FastAPI service, external research APIs, and valid Gemini credentials. Outputs should be independently checked before use.
+[Explore the interactive demo](https://sagharganji.github.io/AURA-Research-Agent/) · [View the research example](AURA_demo_UI/sample_report.md) · [Deployment guide](DEPLOY.md)
 
-## Try the interface
+</div>
 
-- **Static demo:** Deploy `AURA_demo_UI/` to Vercel (instructions below).
-- **Local preview:** From the repository root, run `python -m http.server 5500 -d AURA_demo_UI`, then open <http://localhost:5500>.
-- **Recorded sample:** Select **Open recorded example** to explore a saved solar-flare research report. It is not generated anew for the text you enter.
+![AURA Atlas dashboard — home screen](assets/aura-atlas-dashboard.png)
 
-The Atlas interface includes a persistent left sidebar, research templates, a visual agent map, an evidence index, summary/roadmap/full-report tabs, accessible desktop/mobile navigation, and Markdown export.
+*The actual AURA Atlas home screen. The public demo currently runs in **recorded-example mode**; live agent execution requires a separate backend deployment.*
 
-## Architecture
+---
 
-```text
-Browser / AURA Atlas (Vercel)
-  ├─ Sample mode → saved Markdown report (no API costs)
-  └─ Live mode   → POST /research
-                    │
-                FastAPI (Google Cloud Run)
-                    │
-                AURA orchestrator
-                    ├─ Planning
-                    ├─ Paper discovery (OpenAlex)
-                    ├─ Dataset discovery (DataCite)
-                    ├─ Code discovery (GitHub)
-                    ├─ Evidence verification and comparison
-                    └─ Decision support and roadmap
-                         │
-                      Gemini API
+## Why I built AURA
+
+Research rarely stops at finding an answer. There are papers to evaluate, datasets to inspect, competing approaches to compare, assumptions to question, and decisions to turn into a realistic plan.
+
+I built **AURA** to bring those steps into one workflow instead of treating research as a single chatbot response. AURA is an evolving Python multi-agent prototype paired with **Atlas**, its browser-based research workspace.
+
+The first public milestone is now live: a responsive interface with an inspectable example report on **machine learning for solar flare prediction**. The research agents exist in the repository; connecting them to the public demo is the next deployment milestone.
+
+## Take a look
+
+**[Open the live AURA Atlas interface →](https://sagharganji.github.io/AURA-Research-Agent/)**
+
+The hosted site works without a running local terminal. Choose **Open recorded example** to explore the saved research report, its linked evidence, the decision brief, and the implementation roadmap. You can also export the report as Markdown.
+
+> **Demo status:** The hosted GitHub Pages site is a static frontend. Its saved solar-flare report is **not** regenerated for a new question. Running a new investigation requires the optional FastAPI backend, a supported cloud environment, configured external services, and an API key stored on the server.
+
+## Inside the workspace
+
+| Area | Purpose |
+| --- | --- |
+| **Research workspace** | Define the question and choose a starting research direction. |
+| **Agent orchestration** | Visualize how specialist roles contribute to the research process. |
+| **Evidence index** | Inspect the papers and datasets supporting the saved example. |
+| **Decision brief** | Review findings, caveats, and a suggested technical direction. |
+| **Research reports** | Read the executive summary, roadmap, or full report, then export Markdown. |
+
+## The research pipeline
+
+AURA brings together specialized responsibilities rather than asking one model to do everything.
+
+```mermaid
+flowchart LR
+    Q["Research question"] --> P["Plan"]
+    P --> D["Discover"]
+    D --> V["Verify"]
+    V --> A["Analyze"]
+    A --> S["Decision support"]
+    S --> R["Roadmap"]
+    D -.-> E[("Papers · datasets · code")]
+    E -.-> V
 ```
 
-## Run locally
+- **Planning:** break an open-ended objective into smaller research tasks.
+- **Discovery:** search scholarly literature via OpenAlex, datasets via DataCite, and open-source repositories via GitHub.
+- **Verification and analysis:** organize retrieved evidence, assess support for claims, and compare approaches and gaps.
+- **Decision and roadmap:** synthesize a technical direction with constraints, trade-offs, and implementation phases.
 
-**Prerequisites:** Python 3.11+, Git, a browser. A Gemini API key is needed **only** for live research.
+The architecture is implemented in Python; the website is the presentation layer. The visible agent diagram is not real-time execution telemetry.
+
+## Example: solar flare forecasting
+
+The recorded example asks AURA to investigate the design of a machine-learning system for predicting solar flares: find relevant literature and datasets, compare methods, identify limitations, and draft an implementation roadmap.
+
+The resulting Markdown report contains a research plan, source links, evidence-linked findings, a method comparison, identified gaps, a decision brief, and phased next steps.
+
+**[Read the recorded example →](AURA_demo_UI/sample_report.md)**
+
+This example is an illustration of the workflow, not a claim of a trained or deployed solar-flare forecasting model. Sources, generated conclusions, and confidence statements require independent review.
+
+## Technology
+
+| Layer | Stack |
+| --- | --- |
+| Interface | HTML, CSS, JavaScript; responsive Atlas UI |
+| Research orchestration | Python multi-agent pipeline |
+| API | FastAPI / Uvicorn |
+| LLM integration | Google Gemini API |
+| Discovery tools | OpenAlex, DataCite, GitHub |
+| Frontend hosting | GitHub Pages (live) |
+| Optional API deployment | Docker + Google Cloud Run (planned / separately configured) |
+
+## Run it locally
+
+**Requirements:** Python 3.11+, Git, and a modern browser. You do **not** need a Gemini key to view the recorded example.
 
 ```bash
 git clone https://github.com/sagharganji/AURA-Research-Agent.git
 cd AURA-Research-Agent
-python -m venv .venv
-```
-
-Activate the environment (Windows PowerShell: `./.venv/Scripts/Activate.ps1`; macOS/Linux: `source .venv/bin/activate`) and install:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-**Preview the frontend (no secrets):**
-
-```bash
 python -m http.server 5500 -d AURA_demo_UI
 ```
 
-Open <http://localhost:5500>. If already inside `AURA_demo_UI`, omit `-d AURA_demo_UI` to avoid 404 errors.
+Visit **http://localhost:5500** and select **Open recorded example**. If you are already inside `AURA_demo_UI`, use `python -m http.server 5500` instead.
 
-**Run live research:** Copy `.env.example` to `.env`, add `GEMINI_API_KEY` locally and **never commit it**. Environment variables must be loaded into the server process; for example, in PowerShell:
+For Python development and API testing, create a virtual environment and install the dependencies:
 
-```powershell
-$env:GEMINI_API_KEY = Read-Host "Gemini key"
-python -m uvicorn app.api:app --host 127.0.0.1 --port 8080
+```bash
+python -m venv .venv
+# Activate your environment, then:
+python -m pip install -r requirements.txt
+python -m pip install pytest httpx
+python -m pytest tests/test_api.py -q
 ```
 
-In `AURA_demo_UI/config.js`, temporarily set `window.AURA_BACKEND_URL = "http://127.0.0.1:8080";`. Open the frontend through `localhost:5500` and test a research question. **Never add an API key to config.js or any browser file.**
+For live research, configure `GEMINI_API_KEY` **only in the server environment**, start `uvicorn app.api:app --host 127.0.0.1 --port 8080`, and configure the public backend URL in `AURA_demo_UI/config.js`. Never place the API key in browser code or commit it to GitHub.
 
-Check the backend at `http://127.0.0.1:8080/health`, or view its API schema at `/docs`. For tests, install `pytest httpx` and run `python -m pytest tests/test_api.py -q`.
+See **[DEPLOY.md](DEPLOY.md)** for the optional Cloud Run deployment plan and its cost, permission, and security considerations.
 
-## Deploy once, share the link
-
-**Frontend → Vercel:** Import this repository, set Root Directory to `AURA_demo_UI`, Framework Preset to **Other**, and leave the build command empty (static HTML/CSS/JS). Click Deploy. Share the **Vercel link**, not `localhost`, on LinkedIn; no terminal needs to remain open.
-
-**Backend → Google Cloud Run (optional):** See [DEPLOY.md](DEPLOY.md). Cloud Run requires an eligible Google Cloud account with billing enabled. Configure `GEMINI_API_KEY` as a Secret Manager secret and `ALLOWED_ORIGINS` as your exact Vercel origin. After deployment, copy only the Cloud Run HTTPS URL into `AURA_demo_UI/config.js`, commit and redeploy Vercel.
-
-**Costs and availability:** Cloud Run and Gemini can incur charges; free quotas are not a guarantee of zero cost. Some countries and accounts are restricted. The saved-example frontend is usable without these services. The current in-memory rate limit is a courtesy cap, not secure production abuse protection—add authorization and stricter server-side quotas before publicly exposing paid live inference.
-
-## Repository layout
+## Repository map
 
 ```text
-AURA_demo_UI/        Responsive static website and recorded example
-app/api.py           FastAPI health and research endpoints
-app/main.py          Multi-agent orchestration
-app/agents/          Planner, discovery, verification, analysis and roadmap
-app/tools/           OpenAlex, DataCite and GitHub integrations
-app/evidence/        Evidence organization
-app/report.py        Markdown report assembly
-Dockerfile           Cloud Run backend image
-requirements.txt     Local development dependencies
-requirements.backend.txt  Lean production backend dependencies
-tests/               Offline API contract and smoke tests
+AURA_demo_UI/           Atlas frontend + recorded report
+app/
+  agents/              Specialist research responsibilities
+  tools/               External discovery integrations
+  evidence/            Evidence collection / retrieval
+  api.py               Optional FastAPI adapter
+  main.py              Research orchestration
+  report.py            Report generation
+assets/                 Dashboard screenshot
+tests/                  Offline checks
+Dockerfile              Optional backend container
+requirements.txt        Local development dependencies
+requirements.backend.txt  Lean backend dependencies
+DEPLOY.md               Deployment instructions
 ```
 
-## Example research question
+## What comes next
 
-> Design an evidence-backed AI pipeline for solar flare prediction using multimodal satellite observations, public benchmark datasets, calibrated uncertainty estimates, reproducible baselines, and a realistic roadmap for deployment.
+- Connect the existing research pipeline to the public interface through a hosted API.
+- Add real-time execution status and a more inspectable citation trail.
+- Expand evaluation, reproducibility checks, and research-history support.
+- Add authentication and durable usage limits before any public deployment with paid inference.
 
-## Limitations & next steps
+## Acknowledgments
 
-- The interface displays a saved report until a live API URL is configured; it does **not** fabricate live progress, fresh citations or validation scores.
-- Source relevance, source credibility and generated conclusions require human review.
-- The HTTP endpoint returns a completed result rather than real-time per-agent telemetry.
-- Planned: persistent run history, streaming agent progress, stronger evaluation and citation verification, user authentication, and safer public rate limits.
+Thanks to **Harsh Gupta** for the early conversations around the idea and for sharing deployment advice along the way.
 
-## Author
+---
 
-**Saghar Ganji** · [GitHub](https://github.com/sagharganji)
+<div align="center">
 
-AURA is an evolving AI research and decision-support prototype, not a finished autonomous scientific validation system.
+Built by **[Saghar Ganji](https://github.com/sagharganji)** · [Interactive demo](https://sagharganji.github.io/AURA-Research-Agent/)
+
+*An evolving research prototype — not an autonomous scientific validation system.*
+
+</div>
